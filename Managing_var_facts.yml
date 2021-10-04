@@ -1,6 +1,6 @@
 ---
 - name: Web server installing process
-  hosts: serverb.lab.example.com
+  hosts: webserver
   become: yes
   vars:
     firewall_pkg: firewalld
@@ -58,6 +58,42 @@
     - name: Copying Web Content
       copy:
         dest: "{{ web_root }}/index.html"
+        content: "{{ ansible_facts.fqdn }} {{ansible_facts.default_ipv4.address}} has been customized by Ansible \n"
+
+    - name: Enable and start Firewalld
+      service:
+        name: "{{ firewall_svc }}"
+        state: started
+        enabled: yes
+
+    - name: Enable and start Web Service
+      service:
+        name: "{{ web_svc }}"
+        state: started
+        enabled: yes
+    
+- name: Second Play for testing Web Service from localhost
+  hosts: localhost
+  become: no
+  vars:
+    web_user: guest
+  vars_files:
+    - vars/secret.yml
+  tasks:
+    - name: Connecting to Web Server from localhost
+      uri:
+        url: https://serverb.lab.example.com
+        url_username: "{{ web_user }}"
+        url_password: "{{ web_pass }}"
+        return_content: yes
+        status_code: 200
+        validate_certs: false
+        force_basic_auth: yes
+      register: auth_test
+
+    - debug:
+        msg: "{{ auth_test.content }}"
+
 
 
 
