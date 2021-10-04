@@ -1,0 +1,11 @@
+---
+- name: It select System information 
+  hosts: localhost
+  gather_facts: yes
+  tasks:
+  - name: Checking system is online
+    ansible.builtin.ping:
+      data: localhost
+  - name: Print all system information 
+    ansible.builtin.debug:
+      var: "{{ ansible_facts.ansible_distribution }}"

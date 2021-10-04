@@ -1,0 +1,68 @@
+---
+- name: Web server installing process
+  hosts: serverb.lab.example.com
+  become: yes
+  vars:
+    firewall_pkg: firewalld
+    firewall_svc: firewalld
+    web_pkg: httpd
+    web_svc: httpd
+    ssl_pkg: mod_ssl
+    httpdconf_src: files/httpd.conf
+    httpdconf_dest: /etc/httpd/confg/httpd.conf
+    htaccess_sr: files/.htaccess
+    secret_dir: /etc/httpd/secrets
+    secret_src: files/htpasswd
+    secret_dest: "{{ secrets_dir }}/htpasswd"
+    web_root: /var/www/html
+  tasks:
+    - name: Installing latest WEB / Firewall and SSL packages are installed
+      yum: 
+        - "{{ firewall_pkg }}"
+        - "{{ web_pkg }}"
+        - "{{ ssl_pkg }}"
+      state: latest
+    
+    - name: Configure Httpd Conf file
+      copy:
+        src: "{{ httpdconf_src }}"
+        dest: "{{ httpdconf_dest }}"
+        group: root
+        owner: root
+        mode: 0644
+
+    - name: Creating Directory 
+      file:
+        path: "{{ secret_dir }}"
+        state: directory
+        mode: 0500
+        group: apache
+        owner: apache
+
+    - name: Copy Web Configuration
+      copy:
+        src: "{{ secret_src }}"
+        dest: "{{ secret_dest }}"
+        owner: apache
+        group: apache
+        mode: 0400
+    
+    - name: Copy htaccess file
+      copy:
+        src: "{{ htaccess_src }}"
+        content: "{{ web_root }}/.htaccess"
+        owner: apache
+        group: apache
+        mode: 0400
+    
+    - name: Copying Web Content
+      copy:
+        dest: "{{ web_root }}/index.html"
+
+
+
+
+
+
+
+

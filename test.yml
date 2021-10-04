@@ -1,0 +1,9 @@
+---
+- name: this is just a test 
+  hosts: localhost
+  gather_facts: yes
+
+  tasks:
+  - name: Ping Testing
+    ping:
+      data: localhost
