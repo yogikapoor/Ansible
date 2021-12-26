@@ -1,0 +1,16 @@
+---
+- name: Resucrring Cron Job
+  hosts: webservers
+  become: true
+  tasks:
+  - name: Creating Cron Job for user Devops
+    cron:
+      name: add date and time to file
+      job: date >> /home/devops/my_datetime_cron_job
+      hour: 9-16
+      minute: "*/2"
+      weekday: 1-5
+      user: devops
+      state: present
+      cron_file: add-date-time
+

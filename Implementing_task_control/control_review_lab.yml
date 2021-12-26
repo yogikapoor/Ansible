@@ -1,0 +1,60 @@
+---
+- name: Installing Apache Web Server and Secure it using mod_ssl
+  hosts: all
+  become: yes
+  gather_facts: yes
+  vars_files:
+    - vars.yml
+  tasks:
+  - name: Check mim Ram Requirement
+    fail:
+      msg: "The {{ inventory_hostname }} did not meet minium reqs"
+    when: (ansible_memtotal_mb < 256 ) or (ansible_distribution != 'RedHat')
+  
+  - name: Installing missing packages on {{ inventory_hostname}}
+    yum:
+      name: "{{ packages }}"
+      state: latest
+  
+  - name: Starting and Enabling the {{ services }}
+    service:
+      name: "{{ services }}"
+      state: started
+      enabled: yes
+- name: Setting up the SSL Cert directory cand config files
+  block:
+  - name: Creating Directory folders for SSL Cert
+    file:
+      path: "{{ ssl_cert_dir }}"
+      state: directory
+    
+  - name: Copying the WEB Configuration files
+    copy:
+      src: "{{ item.src }}"
+      dest: "{{ item.dest }}"
+    loop: "{{ web_config_files }}"
+    notify: web service restart
+  
+  rescue:
+  - debug:
+      msg: "One or more of the confiruation changes failed, but the webe service is still  active"
+    
+  - name: Allowing Firewall rule {{ web_service }}
+    firewalld:
+      service: "{{ item }}"
+      state: enabled
+      permanent: yes
+      immediate: yes
+    loop:
+      - http
+      - https
+  handlers:
+    - name: web service restart
+      service:
+        name: "{{ web_service }}"
+        state: restarted
+  
+
+
+
+      

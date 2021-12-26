@@ -1,0 +1,17 @@
+---
+- name: Checking disk condition
+  hosts: all
+  become: yes
+  gather_facts: yes
+  tasks:
+  - name: Login to check disk size and if its available install packages
+    yum:
+      name: mariadb-server
+      state: present
+    loop: "{{ ansible_mounts }}"
+    when: item.mount == '/' and item.size_available > 300000000 # 300 MB
+  
+  - debug:
+      var: "{{ item.mount }} and {{ item.size }}"
+    loop: "{{ ansible_mounts }}"
+    

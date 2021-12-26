@@ -1,0 +1,13 @@
+---
+- name: Using the copy module
+  hosts: all
+  remote_user: root
+  tasks:
+  - name: Copying user.txt on {{ inventory_hostname }}
+    copy:
+      src: files/users.txt
+      dest: /home/devops/users.txt
+      owner: devops
+      group: devops
+      mode: 0657
+      setype: samba_share_t

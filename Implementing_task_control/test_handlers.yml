@@ -1,0 +1,11 @@
+---
+- name: testing handlers
+  hosts: all
+  become: yes
+  gather_facts: yes
+  tasks:
+  - name: Latest version
+    yum:
+      name: notpkg
+      state: latest
+    ignore_errors: yes

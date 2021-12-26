@@ -1,0 +1,54 @@
+---
+- name: Enable internet Services
+  hosts: serverb.lab.example.com
+  become: yes
+  tasks:
+  
+  - name: Installing Web, firewalld and PHP packages
+    yum:
+      name:
+        - httpd
+        - firewalld
+        - php
+        - php-mysqlnd
+        - mariadb-server
+      state: latest
+
+  - name: enable Firewalld 
+    service:
+      name: "{{ item }}"
+      state: started
+      enabled: yes
+    loop:
+      - httpd
+      - firewalld
+      - mariadb
+      
+  - name: Allowing firewall rules for http
+    firewalld:
+      service: http
+      state: enabled
+      permanent: yes
+      immediate: yes
+  
+  - name: Configure Web content
+    get_url:
+      url: http://materials.example.com/labs/playbook-review/index.php
+      dest: /var/www/html/
+
+- name: Testing web connectivity
+  hosts: localhost
+  become: no
+  tasks:
+  
+  - name: Checking connection
+    uri:
+      url: http://serverb.lab.example.com
+      status_code: 200
+      return_content: yes
+    register: http_status
+
+  - debug:
+      msg: "{{ http_status }}"
+
+

@@ -1,0 +1,28 @@
+---
+- name: Creating Playbook for configuring MOTD on Managed Hosts
+  hosts: all
+  become: yes
+  remote_user: devops
+  tasks:
+  - name: Configuring MOTD on {{ inventory_hostname }}
+    template:
+      src: motd.j2
+      dest: /etc/motd
+      owner: root
+      group: root
+      mode: 0644
+  - name: Checking if the MOTD created 
+    stat:
+      path: /etc/motd
+    register: motd_status
+  
+  - debug:
+      msg: "{{ motd_status }}"
+
+  - name: Modifying the issue file as per the standards
+    copy:
+      src: files/issue
+      dest: /etc/issue
+      owner: root
+      group: root
+      mode: 0644

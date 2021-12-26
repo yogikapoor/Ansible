@@ -1,0 +1,15 @@
+---
+- name: Adding User accounts
+  hosts: all
+  become: yes
+  tasks:
+  - name: Creating user accounts
+    user:
+      name: "{{ item.users }}"
+      state: present
+      groups: "{{ item.groups }}"
+    loop:
+      - name: Jane
+        groups: wheel
+      - name: Joe
+        groups: devops

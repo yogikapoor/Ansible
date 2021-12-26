@@ -1,0 +1,51 @@
+---
+- name: Creating User Accounts
+  hosts: all
+  become: yes
+  vars_files:
+    - vars/users_vars.yml
+  tasks:
+  - name: Creating Group on manage host
+    group: 
+      name: webadmin
+      state: present
+
+  - name: Adding users on managed hosts
+    user:
+      name: "{{ item.username }}"
+      group: "{{ item.groups }}"
+      state: present
+      generate_ssh_key: yes
+    loop: "{{ users }}"
+
+  - name: Copying key to remote hosts
+    authorize_key:
+      key: "{{ lookup ('file', '/home/{{ item.username }}/.ssh/id_rsa.pub') }}"
+      user: "{{ item.username }}"
+    loop: "{{ users }}"
+
+  - name: Adding users sudo permission
+    copy:
+      dest: /etc/sudoers.d/webadmin
+      content: "%webadmin ALL=(ALL)    NOPASSWD: ALL"
+      mode: 0440
+  
+  - name: Removing Root user directly ssh'ing to hosts
+    lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: '^PermitRootLogin'
+      line: 'PermitRootLogin no'
+    notify: ssh restart
+  
+  handlers:
+    - name: ssh restart
+      service: 
+       name: sshd
+       state: restarted
+       
+
+
+  
+
+
+

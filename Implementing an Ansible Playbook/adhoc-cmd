@@ -1,0 +1,14 @@
+#ansible host-patter -m module [-a 'module arguments'] [-i inventor]
+
+ansible -m ping all
+
+ansible -m user -a 'name=newbie uid=400 state=present'
+
+ansible all -m command -a /usr/bin/hostname
+
+ansible all -m command -a /usr/bin/hostname -o
+
+ansible localhost -m command -a set # it will fail
+
+ansible localhost -m shell -a set
+

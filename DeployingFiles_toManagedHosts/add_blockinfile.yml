@@ -1,0 +1,13 @@
+---
+- name: Adding block of lines in a file
+  remote_user: root
+  hosts: all
+  tasks:
+  - name: Modifying a file
+    blockinfile:
+      path: /home/devops/users.txt
+      block: |
+        This block of text consist of two lines.
+        They have been added by the blockinfile module.
+      state: present
+

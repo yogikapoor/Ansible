@@ -1,0 +1,20 @@
+---
+- name: Task failure Exercies
+  hosts: all
+  become: yes
+  vars:
+    web_pkg: http
+    db_pkg: mariadb-server
+    db_svc: mariadb
+  tasks:
+  - name: Install {{ web_pkg }}
+    yum:
+      name: "{{ web_pkg }}"
+      state: present
+    ignore_errors: yes
+  
+  - name: Install {{ db_pkg }}
+    yum:
+      name: "{{ db_pkg }}"
+      state: present
+  

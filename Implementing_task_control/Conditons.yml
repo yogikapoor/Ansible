@@ -1,0 +1,12 @@
+---
+- name: Condition
+  hosts: all
+  become: yes
+  vars:
+    run_my_task: yes
+  tasks:
+  - name: checking condition
+    yum:
+      name: httpd
+      state: present
+    when: run_my_task

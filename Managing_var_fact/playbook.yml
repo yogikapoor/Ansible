@@ -1,0 +1,117 @@
+---
+- name: Data Review
+  hosts: webserver
+  become: yes
+  vars:
+  firewall_pkg: firewalld
+  firewall_svc: firewalld
+  web_pkg: httpd
+  web_svc: httpd
+  ssl_pkg: mod_ssl
+  httpdconf_src: files/httpd.conf
+  httpdconf_dest: /etc/httpd/conf/httpd.conf
+  htaccess_src: files/.htaccess
+  secrets_dir: /etc/httpd/secrets
+  secrets_src: files/htpasswd
+  secrets_dest: "{{ secrets_dir}}/htpasswd"
+  web_root: /var/www/html
+  tasks:
+  - name: Installing Reguired latest package for Web Server
+    yum:
+      name:
+        - "{{ firewall_pkg }}"
+        - "{{ web_pkg }}"
+        - "{{ ssl_pkg }}"
+      state: latest
+  - name: Copy configuration files
+    copy:
+      src: "{{ httpdconf_src }}"
+      dest: "{{ httpdconf_dest }}"
+      owner: root
+      group: root
+      mode: 0644
+  
+  - name: creating secret directories
+    file:
+      path: "{{ secrets_dir }} "
+      owner: apache
+      group: apache
+      mode: 0500
+      state: directory
+  - name: Copying secret file
+    copy:
+      src: "{{ secrets_src }}"
+      dest: "{{ secrets_dest }}"
+      owner: apache
+      group: apache
+      mode: 0400
+  - name: Copying Secret Passwd file
+    copy:
+      src: "{{ htaccess_src }}"    
+      dest: "{{ web_root }}/.htaccess"
+      owner: apache
+      group: apache
+      mode: 0400
+  
+  - name: Copying Web Content
+    copy:
+      content: "{{ ansible_fqdn }} {{ ansible.ipv4.address }} has been customized by Ansible.\n "
+      dest: "{{ web_root}}/index.html"
+  
+  - name: Enable Firewall service
+    service: 
+      name: "{{ firewall_svc }}"
+      state: started
+      enabled: yes
+  
+  - name: Allowing http Port
+    firewalld:
+      state: enabled
+      service: https
+      permanent: yes
+      immediate: yes
+
+  - name: Enabling Web Service
+    service:
+      name: "{{ web_svc }}"
+      state: started
+      enabled: yes
+
+- name: Second Play for testing
+  hosts: localhost
+  become: no
+  vars:
+    - web_user: guest
+  vars_files:
+    - vars/secret.yml
+  tasks:
+  - name: Connecting Web Server using guest account
+    uri:
+      url: https://serverb.lab.example.com
+      user: "{{ web_user }}"
+      password: "{{ web_pass }}"
+      return_content: yes
+      status_code: 200
+      validate_certs: no
+      force_basic_auth: yes
+    register: web_result
+  - debug:
+      msg: "{{ web_result }}"
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+

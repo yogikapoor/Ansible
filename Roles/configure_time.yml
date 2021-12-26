@@ -1,0 +1,16 @@
+---
+- name: Time Synchronization
+  hosts: database_servers
+
+  roles:
+    - rhel-system.roles.timesync
+  
+  post_tasks:
+    - name: Set Timezone
+      timezone:
+        name: "{{ host_timezone }}"
+      notify: reboot host
+  
+  handlers:
+  - name: reboot host
+    reboot:

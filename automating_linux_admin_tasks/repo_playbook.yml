@@ -1,0 +1,38 @@
+---
+- name: Repository Configuration
+  hosts: all
+  become: yes
+  vars:
+    custom_pkg: example-motd
+  tasks: 
+
+  - name: Gather PAckage Fact
+    package_facts:
+      manager: auto
+  
+  - name: Printing package fact information
+    debug:
+      var: ansible_facts.packages[custom_pkg]
+    when: custom_pkg in ansible_facts.packages
+  
+  - name: Adding a Customize Repo
+    yum_repository:
+      name: example-internal
+      file: example
+      base_url: http://materials.example.com/yum/repository
+      description: Example Inc. Internal YUM repo
+      enabled: yes
+      gpg_check: yes
+  - name: Ensure Repo GPG Key is installed
+    rpm_key:
+      state: present
+      key: http://materials.example.com/yum/repository/RPM-GPG-KEY-example
+    when: custom_pkg is defined
+  - name: Installing {{ custom_pkg }}  
+    yum:
+      name: "{{ custom_pkg }}"
+      state: present
+  - name: Show Packages Facts
+    debug:
+      var: ansible_facts.packages[custom_pkg]
+    when: custom_pkg in ansible_facts.packages

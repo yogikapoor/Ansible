@@ -1,0 +1,12 @@
+---
+- name: Configuring SE Linux default values This playbook will revert back the selinux setting 
+  hosts: all
+  remote_user: root
+  tasks:
+  - name: SELinux file context is set to default
+    file:
+      path: /home/devops/users.txt
+      seuser: _default
+      serole: _default
+      setype: _default
+      selevel: _default

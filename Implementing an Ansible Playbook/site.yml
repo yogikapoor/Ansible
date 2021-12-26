@@ -1,0 +1,21 @@
+---
+- name: Install Web Application
+  hosts: web
+  become: yes
+  tasks:
+  - name: Installing web package
+    yum:
+      name: httpd
+      state: present
+
+  - name: Configure the html file
+    copy:
+      src: index.html
+      dest: /var/www/html/index.html
+  
+  - name: Enabling httpd service
+    service:
+      name: httpd
+      state: started
+      enabled: yes
+
