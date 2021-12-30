@@ -1,0 +1,30 @@
+---
+- name: Cron Job for weekly Yum updates
+  hosts: all
+  become: yes
+  tasks:
+  - name: Creating Cron Job yum updates
+    cron: 
+      job: "/usr/bin/yum update -y"
+      name: yum_update
+      special_time: "weekly"
+     
+  
+  - name: Notifying Monitoring service 
+    cron: 
+      job: "/usr/bin/status"
+      name: "Reboot Status"
+      special_time: "reboot"
+  - name: Report Status
+    cron: 
+      name: "Login Report"
+      job: /usr/bin/faillock_report
+      weekday: "1,3,5"
+      hour: "7"
+      minute: "30"
+
+      
+
+     
+
+

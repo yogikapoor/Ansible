@@ -1,0 +1,17 @@
+---
+- name: Using Network Role
+  hosts: webservers
+  become: yes
+  roles:
+    role: linux-system-roles.network
+
+
+## In different vars/webservers/network.yml file define below variables
+
+network_connections:
+- name: eth1-profile
+  type: ethernet
+  interface_name: eth1
+  ip:
+    address:
+      - 172.25.250.40/24

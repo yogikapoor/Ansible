@@ -1,0 +1,41 @@
+---
+- name: Configuring and Securing Web Service Ports
+  hosts: all
+  become: yes
+  #gather_facts: no
+  tasks:
+  - name: Installing Web Servie and Firewalld
+   yum:
+     name:
+     - httpd
+     - firewalld
+     state: present
+  - name: Enabled Firewall Rules
+    firewalld:
+      port: "{{ item }}"  # Note if you are using port number using Port or else Service 
+      state: enabled
+      permanent: yes
+      immediate: yes
+    loop:
+      - '80/tcp' # http
+      - '22/tcp' # ssh
+    when: "'web' in inventory_hostname"
+  - name: Enabled Firewall Rules for DB Server {{ inventory_hostname}}
+    firewalld:
+      service: "{{ item }}" # Check ***
+      state: enabled
+      permanent: yes
+      immediate: yes
+    loop:
+      - postgresql #'5432/tcp'
+      - ssh #'22/tcp'
+    when: "'db' in inventory_hostname"
+
+    - name: Enable SElinux on all the hosts
+     lineinfile:
+       regex: "{{ item.from }}"
+       line: "{{ item.to }}"
+       path: /etc/selinux/config
+     loop:
+       - { from: "^SELINUX=", to: "SELINUX=enforcing" }
+       - { from: "^SELINUXTYPE=", to: "SELINUXTYPE=targeted" }

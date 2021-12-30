@@ -1,0 +1,39 @@
+---
+- name: USer Account Creatation
+  hosts: all
+  become: yes
+  vars_files:
+    - vars/user_list.yml
+    - secret.yml
+
+  tasks: 
+  - name: Ensure the Wheel group
+    group: 
+      name: wheel
+      state: present
+
+  - name: User accounts for web servers
+    user: 
+      name: "{{ item.username }}"
+      uid: "{{ item.uid }}"
+      password: "{{ user_password | password_hash('sha512') }}"
+      group: wheel
+      shell: /bin/bash
+      state: present
+    loop: "{{ users }}"
+    when: "item.uid|string|first == '1'  and 'webserver' in group_names"
+  
+  - name: User accounts for Database servers
+    user: 
+      name: "{{ item.username }}"
+      uid: "{{ item.uid }}"
+      password: "{{ user_password | password_hash('sha512') }}"
+      group: wheel
+      shell: /bin/bash
+      state: present
+    loop: "{{ users }}"
+    when: "item.uid|string|first == '2'  and 'database' in group_names"
+    # You can also write
+    # when:
+    # - item.uid|string|first == '2'
+    # - 'database' in group_names

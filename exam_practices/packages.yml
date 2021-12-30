@@ -1,0 +1,20 @@
+---
+- name: Software Packages
+  hosts: all
+  become: yes
+  tasks:
+  - name: Installing tcpdump and mailx
+    yum: 
+      name: 
+      - tcpdump
+      - mailx
+      state: present
+    when: "'proxy' in group_names"
+  
+  - name: installting lsof and mailx
+    yum: 
+      name: 
+      - lsof
+      - mailx
+      state: present
+    when: "'database' in group_names"

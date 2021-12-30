@@ -1,0 +1,19 @@
+---
+- name: Archiving files and directiers
+  hosts: database
+  become: yes
+  tasks: 
+  - name: Creating File
+    lineinfile:
+      path: /var/database_list.txt
+      line: " Dev, Test, QA, Prod"
+      create: yes
+  - name: Archiving files
+    archive:
+      path: /var/database_list.txt
+      dest: /var/database_list.gz
+      format: gz
+    register: archive_stat
+  - debug:
+      msg: "{{ archive_stat }}"
+    

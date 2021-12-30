@@ -1,0 +1,20 @@
+---
+- name: Fact playbook
+  hosts: database
+  become: yes
+  tasks: 
+  - name: Creating facts file on {{ inventory_hostname }}
+    file: 
+      path: /etc/ansible/facts.d
+      state: dicrectory
+      recurse: yes
+  - name: Copy the content to the file
+    copy:
+      content: "[sample_exam]\nserver_role=mysql\n"
+      dest: /etc/ansible/facts.d/custom.fact
+  - name: get facts
+    command: "ansible database -m setup | grep role"
+    register: get_fact_details
+  - debug:
+      msg: "{{ get_fact_details }}"
+    

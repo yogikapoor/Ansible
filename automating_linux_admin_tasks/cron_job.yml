@@ -1,0 +1,14 @@
+---
+- name: Cron Job
+  hosts: webservers
+  become: yes
+  tasks:
+  - name: Creating Cron Job for Disk usage
+    cron:
+      name: Monitorying Disk usage
+      user: devops
+      hour: 9-16
+      minute: '*/2'
+      weekday: 1-5
+      cron_file: disk_usage
+      job: df -h >> /home/devops/disk_usage

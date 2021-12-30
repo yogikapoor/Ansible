@@ -1,0 +1,19 @@
+---
+- name: Configuire banner and SSH Configuire
+  hosts: all
+  become: yes
+  tasks: 
+  - name: Configuring SSHD
+    lineinfile:
+      regex: "{{ item.from }}"
+      line: "{{ item.to }}"
+      path: /etc/ssh/sshd_config
+    loop:
+     - "{ from: '^X11Forwarding' to:'X11Forwarding disabled' }"
+     - "{ from: '^MaxAuthTries' to: 'MaxAuthTries 3' }"
+     - "{ from: '^banner' to: 'banner /etc/motd' }"
+  - name: Restart SSHD
+    service: 
+      name: sshd
+      state: restarted
+      

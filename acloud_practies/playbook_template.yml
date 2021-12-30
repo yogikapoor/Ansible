@@ -1,0 +1,11 @@
+---
+- name: Playbook using template config
+  hosts: webservers
+  become: yes
+  vars: 
+    web_path: /opt
+  tasks:
+  - name: Changing web server Index configuration
+    template:
+      src: /root/httpd.template
+      dest: /etc/httpd/conf/httpd.conf

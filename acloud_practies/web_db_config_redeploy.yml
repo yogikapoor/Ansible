@@ -1,0 +1,27 @@
+---
+- name: Reconfigure WEB and DB Server configuration
+  hosts: all
+  become: yes
+  tasks: 
+  - name: Configuring Index file on web servers
+    copy:
+      src: /root/index.html
+      dest: /var/www/html/index.html
+    when: "'web' in inventory_hostname"
+  - name: Copy DB scirpt on db server
+    copy:
+      src: /root/deploy.sh
+      dest: /opt
+      mode: 0755
+    when: "'db' in inventory_hostname"
+  - name: Executing DB Script
+    command: /opt/deploy.sh
+    when: "'db' in inventory_hostname"
+  
+  - name: Configuring 2.0 Index file on web servers
+    copy:
+      src: /root/index2.html
+      dest: /var/www/html/index.html
+    when: "'web' in inventory_hostname"
+  
+    

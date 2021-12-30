@@ -1,0 +1,8 @@
+---
+- name: Selinux Configuration
+  hosts: database
+  become: yes
+  tasks: 
+  - name: Configuring SELinux setting on {{ inventory_hostname }}
+    selinux:
+      

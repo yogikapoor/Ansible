@@ -1,0 +1,22 @@
+---
+- name: Configuring Sysctl parameter based on memory
+  hosts: all
+  become: yes
+  tasks: 
+  - name: Checking and modifying the Sysctl configs
+    sysctl:
+      name: vm.swappiness
+      value: 10
+      state: present
+    when: "ansible_facts.memtotal_mb > 2048mb"
+    ignore_errors: yes
+  
+  - name: Sending error msg
+    debug:
+      msg: "Server memory less than 2048MB"
+    when: "ansible_facts.memtotal_mb < 2048mb"
+    ignore_errors: yes
+  
+  - name: display msg
+    debug:
+      msg: "ansible_memtotal_mb"

@@ -1,0 +1,25 @@
+---
+- name: Playbook for Archive and unarchive files
+  hosts: dbservers
+  become: yes
+  tasks: 
+  - name: Unpacking the tar file
+    unarchive:
+      src: /root/file.tar.gz
+      dest: /opt
+  - name: unpack another file
+    unarchive:
+      src: /tmp/devstuff.tar.gz
+      dest: /opt
+      remote_src: yes
+  - name: compress log files
+    archive:
+      path: /var/log/messages
+      dest: /var/log/messages.tar.gz
+
+  - name: Download tar log file on local host
+    fetch: 
+      src: /var/log/messages.tar.gz
+      dest: /tmp
+
+  

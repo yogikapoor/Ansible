@@ -1,0 +1,37 @@
+---
+- name: Adding new disk and creating Filesystem
+  hosts: dbservers
+  become: yes
+  tasks: 
+  - name: 
+    parted: 
+      device: /dev/xvdg
+      number: 1
+      part_end: 10G
+      state: present
+  
+  - name: Creating PV and VG
+    lvg:
+      pvs: /dev/xvdg1
+      vg: dbvg
+      state: present
+
+  - name: Creating Logical Vol
+    lvol:
+      vg: dbvg
+      lv: AppDB2
+      size: FREE%100
+      state: present
+      
+  - name: Creating Filesystem
+    filesystem:
+      dev: /dev/dbvg/AppDB2
+      fstype: xfs
+  - name: Mounting FS
+    mount:
+      src: /dev/dbvg/AppDB2
+      path: /mnt/appdb2
+      fstype: xfs
+      state: mounted
+
+

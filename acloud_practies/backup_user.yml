@@ -1,0 +1,31 @@
+---
+- name: REmoving OLD Backup user account and creating new one
+  hosts: all
+  become: yes
+  tasks: 
+  - name: Remove old back account
+    user: 
+      name: old_backup
+      state: absent
+  
+  - name: Making sure backup group exist
+    group: 
+      name: backups
+      gid: 12310
+      state: present
+  
+  - name: Making sure backup new group exist
+    group: 
+      name: new_backups
+      gid: 12311
+      state: present
+
+  - name: Creating new backup user account
+    user: 
+      name: new_backup
+      state: present
+      shell: /bin/false
+      uid: 1242
+      groups: backups, new_backups
+      password_lock: yes
+      

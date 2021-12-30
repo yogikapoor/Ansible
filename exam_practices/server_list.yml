@@ -1,0 +1,26 @@
+---
+- name: Create and Use Templates to Create Customised Configuration Files
+  hosts: all
+  become: yes
+  tasks: 
+  - name: using template file
+    template:
+      src: server_list.j2
+      dest: /etc/server_list.txt
+      setype: net_conf_t
+      owner: devops
+      mode: 0600
+  - name: Removing file from other hosts
+    file: 
+      path: /etc/server_list.txt
+      state: absent
+    when: "'database' not in group_names"
+  
+
+
+## Template
+{% for host in groups.all %}
+{{ hostvars[host].inventory_hostname }}
+{% endfor %}
+
+#{{ ansible_fdqn }}

@@ -1,0 +1,15 @@
+---
+- name: Configuring MOTD
+  hosts: all
+  become: yes
+  tasks:
+  - name: MOTD for Proxy Host Group
+    lineinfile:
+      line: "Welcome to {{ item }} server"
+      path: /etc/motd
+    loop:
+      - proxy
+      - webservers
+      - database
+    when: "'{{ item }}' in group_names"
+  

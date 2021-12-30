@@ -1,0 +1,30 @@
+---
+- name: installing backup software and tar file
+  hosts: all
+  become: yes
+  tasks:
+          #  - name: INstall backup software on {{ inventory_hostname }}
+          #    yum:
+          #      name: linuxacademy_backup_package
+          #      state: present
+          #    ignore_errors: yes
+
+  - name: Creating empty file for testing
+    file:
+      path: /root/archive
+      state: touch
+
+  - name: Checking for archive file under /root/archive.tar
+    stat:
+      path: /root/archive.tar
+    register: check_status
+
+  - debug:
+      msg: "{{ check_status }}"
+
+  - name: Tar important files
+    archive:
+      path: /root/archive
+      dest: /root/archive.tar
+      format: tar
+      #    when: check_status.exists == false

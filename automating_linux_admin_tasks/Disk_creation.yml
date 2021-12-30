@@ -1,0 +1,29 @@
+---
+- name: Configuration Storage
+  hosts: webservers
+  become: yes
+  task:
+  
+  - name: Creating Partion using Parted
+    parted:
+      device: /dev/vdb
+      number: 1
+      state: present
+  
+  - name: Creating PV and VG
+    lvg:
+      vg: apache-vg
+      pvs: /dev/vdb1
+  - name: Creating Content Volume
+    lvol:
+      vg: apache-vg
+      lv: content-lv
+      size: 
+
+  - name: Creating log Volume
+    lvol:
+      vg: apache-vg
+      lv: log-vg
+      size:
+      
+

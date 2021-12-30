@@ -1,0 +1,43 @@
+---
+- name: Sample-apache roles
+  yum: 
+    name: 
+    - httpd
+    - mod_ssl
+    - php
+    - firewalld
+  state: present
+- name: Enabling Apache and firewalld
+  service: 
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  loop:
+    - firewalld
+    - httpd
+- name: Allowing Firewall rule for apache
+  firewalld:
+    service: "{{ item }}"
+    state: enabled
+    permanent: yes
+    immediate: yes
+  loop:
+    - http
+    - https
+- name: Updating the Apache index file
+  template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+  notify: restart httpd
+  
+## Handler
+- name: Restarting httpd
+  service: 
+    name: httpd
+    state: restarted
+    enabled: yes
+
+
+###### 
+The address of the server is: {{ ansible_facts.default_ipv4.address }}
+

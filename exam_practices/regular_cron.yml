@@ -1,0 +1,11 @@
+---
+- name: Creating Cron Job for date
+  hosts: proxy
+  become: yes
+  tasks: 
+  cron: 
+    job: date >> /var/log/time.log
+    hour: "*/1"
+    name: date record
+    cron_file: date_job
+    state: present

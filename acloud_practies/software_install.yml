@@ -1,0 +1,31 @@
+---
+- name: Configuring Web Server and Adding user account
+  become: yes
+  hosts: all
+  tasks:
+  - name: INstall Web PAckages
+    yum:
+      name:
+      - httpd
+      - git
+      - tcpdump
+      - php
+      state: present
+  - name: Creating User Group
+    group:
+      name: web
+      state: present
+  - name: Add user to web group 
+    user:
+      name: "{{ item }}"
+      state: present
+      group: web
+    loop:
+     - security
+     - devs
+     - admins
+  - name: Enable web service
+    service:
+      name: httpd
+      state: started
+      enabled: yes

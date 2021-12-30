@@ -1,0 +1,44 @@
+---
+- name: INstalling Web Services on web servers
+  hosts: webservers
+  become: yes
+  tasks:
+  - name: Installing Web Services
+    yum:
+      name: httpd
+      state: present
+  - name: Enable Web Services
+    service:
+      name: httpd
+      state: started
+      enabled: yes
+  - name: Create index file
+    file:
+      path: /var/www/html/index.html
+      state: touch
+
+---
+- name: Cloning Git Repo on Admin Server
+  hosts: admins
+  become: yes
+  tasks:
+  - name: Git check out
+    git:
+      repo: https://github.com/ansible/ansible.git
+      dest: /opt
+--- 
+- name: Creating DB user 
+  hosts: dbservers
+  become: yes
+  tasks:  
+
+  - name: Create User account
+    user:
+      name: dba
+      state: present
+  - name: Configur web service index file
+    copy:
+      src: /root/DBAstuff.txt  
+      dest: /home/dba/
+      owner: dba
+      group: dba 

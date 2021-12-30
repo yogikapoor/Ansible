@@ -1,0 +1,42 @@
+---
+- name: Automating Linux Admin tools
+  hosts: webservers
+  become: yes
+  vars:
+    repo_url: "http://materials.example.com/yum/repository"
+    motd_pkg: example-motd package
+  tasks:
+  - name: Downloading GPG Key
+    rpm_key:
+      key: http://materials.example.com/yum/repository/RPM-GPG-KEY-example
+      state: present
+  - name: Configuring Internal Repo
+    yum_repository:
+      description: Example Inc. Internal YUM repo
+      baseurl: "{{ repo_url }}"
+      gpgcheck: yes
+      file: example
+      name: example-internal
+  - name: Installing motd package
+    yum:
+      name: "{{ motd_pkg }}"
+      state: present
+
+  - name: Creating Webadmin Group on {{ inventory_hostname }}
+    group:
+      name: webadmin
+      state: present
+  
+  - name: Adding two users
+    user:
+      name: "{{ item }}"
+      group: webadmin
+      state: present
+    loop:
+      user_names:
+        - ops1
+        - ops2
+
+
+
+

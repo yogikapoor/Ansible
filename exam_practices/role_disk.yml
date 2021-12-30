@@ -1,0 +1,68 @@
+---
+- name: Partioning disk
+  parted: 
+    device: /dev/vdb
+    number: 1
+    part_end: 800MiB
+    state: present
+- name: Creating VG
+  lvg:
+    vg: vg_database
+    pvs: /dev/vdb1
+- name: Creating Volume
+  lvol:
+    vg: vg_database
+    lv: lv_mysql
+    size: 512m
+- name: Creating Filesytem
+  filesystem:
+    dev: /dev/vg_database/lv_mysql
+    fstype: xfs
+- name: Mouting newly created vol
+  mount:
+    src: /dev/vg_database/lv_mysql
+    path: /mnt/mysql_backups
+    fstype: xfs
+    state: mounted
+
+- name: Installing Mysql package
+  yum: 
+    name: 
+    - mysql-community-server
+    - firewalld
+    state: present
+  ignore_errors: yes
+
+- name: Ensure Firewalld is running
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  loop:
+   - firewalld
+   - mysql-server
+  ignore_errors: yes
+- name: Allowing firewall rules
+  firewalld:
+    service: mysql
+    state: enabled 
+    permanent: yes
+    immediate: yes
+#  Not sure if mysql commuinity version supports this option
+# - name: Creating mysql user
+#   mysql_user:
+#     name: root
+#     password: "{{ database_password }}"
+#     state: present
+#    ignore_erros: yes
+
+- name: Mysql config
+  template:
+    src: my.cnf.j2
+    dest: /etc/my.cnf
+    owner: root
+    group: root
+    mode: 0644
+
+
+    

@@ -1,0 +1,62 @@
+---
+- name: Maintain Servers as per the IT Standards
+  hosts: all
+  become: yes
+  tasks:
+  - name: Installing backup packages
+    yum:
+      name: linuxacademy-backup-software
+      state: present
+    ignore_errors: yes
+  - name: Updating IP Address config file
+    lineinfile:
+      line: "{{ ansible_facts.default.ipv4.address }}"
+      path: /root/addresses
+    when: ansible_distribution == 'RedHat'
+
+- name: Configuration of Web Services
+  hosts: webservers
+  become: yes
+  tasks:
+  - name: Install web and git package
+    yum: 
+      name: 
+      - httpd
+      - git
+      state: present
+  - name: Enable web service
+    service:
+      name: httpd
+      state: started
+      enabled: yes
+  - name: Adding Index file
+    lineinfile: 
+      line: "Waiting for content"
+      path: /var/www/html/index.html
+    
+
+- name: Create DBA user on DB servers
+  hosts: dbservers
+  become: yes
+  tasks:
+  - name: adding user account
+    user: 
+      name: dba
+      state: present
+  - name: Copy config file in dba home folder 
+    copy:
+      src: /root/DBAstuff.txt
+      dest: /home/dba/
+      owner: dba
+      group: dba
+      mode: 0600
+
+- name: Creating IP address file on all RedHat Servers
+  hosts: all
+  become: yes
+  tasks:
+  - name: Updating IP Address config file
+    lineinfile:
+      line: "{{ ansible_facts.default.ipv4.address }}"
+      path: /root/addresses
+    when: ansible_distribution == 'RedHat'

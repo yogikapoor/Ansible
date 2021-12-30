@@ -1,0 +1,14 @@
+---
+- name: Copy encrypted file on DB Server
+  hosts: dbservers
+  become: yes
+  tasks: 
+  - name: Creating Password file
+    lineinfile:
+      line: "LinuxAcad"
+      path: /home/dba/.pgpass
+      owner: dba
+      group: dba
+      mode: 0600
+      create: yes
+ 

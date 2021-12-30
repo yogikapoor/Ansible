@@ -1,0 +1,16 @@
+---
+- name: Installing Packages based on their roles
+  hosts: all
+  become: yes
+  tasks:
+  - name: Install tcpdump on admin servers {{ inventory_hostname }}
+    yum:
+      name: tcpdump
+      state: absent
+    when: "'admin' not in inventory_hostname"
+
+  - name: Installing Git package on Redhat Servers {{ inventory_hostname }}
+    yum:
+      name: git
+      state: present
+    when: ansible_distribution == 'RedHat'

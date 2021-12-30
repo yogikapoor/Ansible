@@ -1,0 +1,33 @@
+---
+- name: adding storage space on {{ inventory_hostname }}
+  hosts: dbserver1
+  become: yes
+  tasks:
+  - name: Creating Partion on raw disk /dev/xvdg
+    parted:
+      device: /dev/xvdg
+      number: 1
+      state: present
+      part_end: 10GiB
+  - name: Creating Volume Group
+    lvg:
+      vg: dbvg
+      pvs: /dev/xvdg1
+  - name: creating Logical Volume
+    lvol:
+      lv: dbvol
+      vg: dbvg
+      size: 10GiB
+  - name: Creating FileSystem
+    filesystem:
+      dev: /dev/dbvg/dbvol
+      fstype: xfs
+
+  - name: Mounting FS
+    mount:
+      src: /dev/dbvg/dbvol
+      path: /mnt/dbdata
+      type: xfs
+      opts: noatime
+      state: present
+        
