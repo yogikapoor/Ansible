@@ -1,0 +1,87 @@
+ok: [localhost] => {
+    "msg": {
+        "changed": false,
+        "msg": "All items completed",
+        "results": [
+            {
+                "accept_ranges": "none",
+                "alt_svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"",
+                "ansible_facts": {
+                    "discovered_interpreter_python": "/usr/bin/python"
+                },
+                "ansible_loop_var": "item",
+                "cache_control": "private, max-age=0",
+                "changed": false,
+                "connection": "close",
+                "content_type": "text/html; charset=ISO-8859-1",
+                "cookies": {
+                    "1P_JAR": "2022-10-03-19",
+                    "AEC": "AakniGMn0es5NHCWul7BJJc-irP5Rt6EgRe9JixJQPfRlnjgKqSXR9lluA",
+                    "NID": "511=dwABeA4UawGeZRMGB1oj4dx0IfCyKzykSrpCWGD07QWQutIbFbY2DKSSXDeKR2wREelZwBaEhdbjfV-AfV2-Q5k2HOA_bnbElGEjBOwjfuKiiGAmCFLPd7xhksYrCOVU2XgvI6oIrmYR6xfJdqb8Dx2sdLPtZ6QWOsu7LvyG9xc"
+                },
+                "cookies_string": "1P_JAR=2022-10-03-19; AEC=AakniGMn0es5NHCWul7BJJc-irP5Rt6EgRe9JixJQPfRlnjgKqSXR9lluA; NID=511=dwABeA4UawGeZRMGB1oj4dx0IfCyKzykSrpCWGD07QWQutIbFbY2DKSSXDeKR2wREelZwBaEhdbjfV-AfV2-Q5k2HOA_bnbElGEjBOwjfuKiiGAmCFLPd7xhksYrCOVU2XgvI6oIrmYR6xfJdqb8Dx2sdLPtZ6QWOsu7LvyG9xc",
+                "date": "Mon, 03 Oct 2022 19:19:33 GMT",
+                "elapsed": 0,
+                "expires": "-1",
+                "failed": false,
+                "invocation": {
+                    "module_args": {
+                        "attributes": null,
+                        "backup": null,
+                        "body": null,
+                        "body_format": "raw",
+                        "client_cert": null,
+                        "client_key": null,
+                        "content": null,
+                        "creates": null,
+                        "delimiter": null,
+                        "dest": null,
+                        "directory_mode": null,
+                        "follow": false,
+                        "follow_redirects": "safe",
+                        "force": false,
+                        "force_basic_auth": false,
+                        "group": null,
+                        "headers": {},
+                        "http_agent": "ansible-httpget",
+                        "method": "GET",
+                        "mode": null,
+                        "owner": null,
+                        "regexp": null,
+                        "remote_src": null,
+                        "removes": null,
+                        "return_content": false,
+                        "selevel": null,
+                        "serole": null,
+                        "setype": null,
+                        "seuser": null,
+                        "src": null,
+                        "status_code": [
+                            "200"
+                        ],
+                        "timeout": 30,
+                        "unix_socket": null,
+                        "unsafe_writes": false,
+                        "url": "https://www.google.com",
+                        "url_password": null,
+                        "url_username": null,
+                        "use_proxy": true,
+                        "validate_certs": true
+                    }
+                },
+                "item": "www.google.com",
+                "msg": "OK (unknown bytes)",
+                "p3p": "CP=\"This is not a P3P policy! See g.co/p3phelp for more info.\"",
+                "redirected": false,
+                "server": "gws",
+                "set_cookie": "1P_JAR=2022-10-03-19; expires=Wed, 02-Nov-2022 19:19:33 GMT; path=/; domain=.google.com; Secure, AEC=AakniGMn0es5NHCWul7BJJc-irP5Rt6EgRe9JixJQPfRlnjgKqSXR9lluA; expires=Sat, 01-Apr-2023 19:19:33 GMT; path=/; domain=.google.com; Secure; HttpOnly; SameSite=lax, NID=511=dwABeA4UawGeZRMGB1oj4dx0IfCyKzykSrpCWGD07QWQutIbFbY2DKSSXDeKR2wREelZwBaEhdbjfV-AfV2-Q5k2HOA_bnbElGEjBOwjfuKiiGAmCFLPd7xhksYrCOVU2XgvI6oIrmYR6xfJdqb8Dx2sdLPtZ6QWOsu7LvyG9xc; expires=Tue, 04-Apr-2023 19:19:33 GMT; path=/; domain=.google.com; HttpOnly",
+                "status": 200,
+                "transfer_encoding": "chunked",
+                "url": "https://www.google.com",
+                "vary": "Accept-Encoding",
+                "x_frame_options": "SAMEORIGIN",
+                "x_xss_protection": "0"
+            }
+        ]
+    }
+}

@@ -1,0 +1,36 @@
+---
+# This playbook is for creating IAM Groups for the DevOps Team
+# It will check the if the DevOps Team Groups are available and if not it will create them
+
+- name: Playbook is for creating IAM Groups for DevOps Team
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  
+  tasks:
+  - name: Creating IAM Groups 
+    iam:
+      name: "{{ item }}"
+      iam_type: group
+      state: present 
+    loop:
+      - devops
+      - qa
+      - secops
+      - storage_team
+    register: iam_group_status
+
+  # - name: IAM Group Detials
+  #   debug:
+  #     msg: "{{ iam_group_status.result }}"
+
+  - name: Creating IAM Users based on their roles
+    iam:
+      iam_type: user 
+      name: "{{ item }}"
+      state: present 
+      #group: "{{ item.group }}"
+    when: dev in group_name
+    loop: 
+      - devops1
+      - devops2

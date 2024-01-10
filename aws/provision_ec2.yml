@@ -1,0 +1,10 @@
+---
+- name: Sample playbook to lanuch ec2 instance 
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+  - name: Provisioning EC2 
+    ec2:
+      instance_type:
+      

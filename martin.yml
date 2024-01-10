@@ -1,0 +1,40 @@
+---
+- name: Testing URL
+  hosts: localhost
+  gather_facts: no
+  become: no
+  vars_files:
+    - url_list.yml
+  tasks:
+
+  - name: Trying to reach to URL from yml file
+    uri:
+      url: https://{{ item }}
+      status_code: 200
+      return_content: no
+      #method: GET
+    register: out
+    until: out.status == 200
+    retries: 1
+    delay: 1
+    with_items:
+      - "{{ urls_var }}"
+    ignore_errors: yes
+
+  - debug:
+      #msg: "{{ out.results[0].invocation.module_args.status_code}}"
+      #msg: "{{ out.results[0].status}}" # its working for single url
+      #msg: "{{ item | map(attributes='invocation') | map(attributes='module_args')}}"  # its working but not yet there
+      msg: "{{ item.invocation.module_args|map(attributes='status') }}" #map(attributes='status') }}"
+    with_items:
+      - "{{ out.results }}"
+      #msg: "{{ out [results] }}"
+    ignore_errors: yes
+
+
+  - name: Verify OK if 200 is return
+    assert:
+      that:
+        - '"200" in "{{ out.results[1].invocation.module_args.status_code|list}}"'
+      fail_msg: "Not 200"
+      success_msg: "200 is good"

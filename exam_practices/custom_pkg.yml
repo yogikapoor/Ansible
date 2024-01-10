@@ -1,0 +1,15 @@
+---
+- name: 
+  hosts: webservers
+  become: yes
+  vars: 
+    custom_pkg: example-motd
+  tasks: 
+    - name: gather packages info
+      package_facts:
+        manager: auto
+
+    - name: 
+      debug:
+        msg: "Checking if package is installed {{ ansible_facts.packages[custom_pkg] }}"
+        when: custom_pkg in ansible_facts.packages

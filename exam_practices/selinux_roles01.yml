@@ -1,0 +1,21 @@
+---
+- name: Using Roles setting Selinux 
+  hosts: webservers
+  become: yes
+  tasks: 
+  - name: Apply Selinux Role
+    block: 
+      - include_role: 
+          name: rhel-system-roles.selinux
+    rescue: 
+      - name: Check for failure for other reasons than required reboot
+        fail: 
+        when: not selinux_reboot_required
+      - name: Restart MAnaged host
+        reboot: 
+      - name: Reapply the selinux
+        include_role:
+          name: rhel-system-roles.selinux
+
+
+# password: "{{ 'redhat' |password_hash('sha512', 'mysecret')}}"
